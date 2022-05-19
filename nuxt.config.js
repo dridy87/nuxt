@@ -81,7 +81,7 @@ export default {
           }, 500)
         })
       } else {
-        return { x: 0, y: 50000 }
+        return { x: 0, y: 0 }
       }
     }
 
