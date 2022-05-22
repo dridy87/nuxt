@@ -58,14 +58,17 @@
 </template>
 
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue'
+import {AxiosResponse} from 'axios'
+export default Vue.extend({
   meta: {
-      scrollPos: {
-        x: 0,
-        y: 0
-      }
-    },
+    scrollPos: {
+      x: 0,
+      y: 0
+    }
+  },
+  
   data () {
     return {
       items: [],
@@ -78,12 +81,12 @@ export default {
   
   created() {
     console.log('created');
-    this.$axios.get('/api/service/bannerv2?bnPosition=store_st_t').then(res=>{
+    this.$axios.get('/api/service/bannerv2?bnPosition=store_st_t').then((res:AxiosResponse)=>{
       console.log(res.data.data)
       this.items = res.data.data
     })
 
-    this.$axios.get('/api/store/home/v2/store?page=1').then(res=>{
+    this.$axios.get('/api/store/home/v2/store?page=1').then((res:AxiosResponse)=>{
       console.log(res.data)
       this.goods = res.data.data
     })
@@ -95,24 +98,7 @@ export default {
     window.addEventListener('scroll', () => {
       this.bottom = this.bottomVisible()
     })
-    // 
-
-  // setTimeout(function(){
-  //   window.scroll({ top: 135500, left: 0, behavior: 'smooth' })
-  // },500)    
-
-    // this.$nextTick(function(){
-    //     window.scroll({ top: 15500, left: 0, behavior: 'smooth' })
-    // });
-    
-    
   },
-  updated(){
-// this.$nextTick(function(){
-//         window.scroll({ top: 15500, left: 0, behavior: 'smooth' })
-//     });
-  },
-  
   methods: {
     bottomVisible() {
       const scrollY = window.scrollY
@@ -122,25 +108,26 @@ export default {
       return bottomOfPage || pageHeight < visible
     },
 
-    disCount(promotionPrice, price) {
+    disCount(promotionPrice: number, price: number) {
       return Math.ceil(((price - promotionPrice)/price)* 100)
     }
   
   },
   watch: {
-    bottom(bottom) {
+    bottom(bottom: number) {
       if (bottom) {
         this.page++
-        this.$axios.get('/api/store/home/v2/store?page='+this.page).then(res=>{
-          console.log(res.data.data)
-          this.goods = [...this.goods, ...res.data.data]
+        this.$axios.get('/api/store/home/v2/store?page='+this.page).then((res:AxiosResponse)=>{
+          console.log(res.data.data);
+          // this.goods = [...this.goods, ...res.data.data]
+          this.goods = this.goods.concat(res.data.data)
 
           console.log('this.goods', this.goods)
         })
       }
     }
   }   
-}
+})
 </script>
 
 <style>
